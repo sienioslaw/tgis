@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <utility>
 #include <stdio.h>
 #include <vector>
 
@@ -14,7 +15,7 @@ int my_array[MAX][MAX];     	// Graf jako macierz incydencji
 
 int n, m;						// n -liczba wierzcholkow, m - krawedzi
 int paleta = 4; 				// cztery kolory, nie więcej!
-vector<vector <int> > v;
+vector<vector <int> > sasiedzi;
 vector<vector <int> > cykle;
 
 enum VertexState { White, Gray, Black };
@@ -22,74 +23,28 @@ VertexState *odwiedzone = new VertexState[MAX];
 
 string KOLORY[]= {"red","blue","green", "yellow"};
 
-
-void DFS_visit(int u) {
-	int i;
-	odwiedzone[u] = Gray;
-	
-	
-	//dla kazdego sasiada wierzcholka u
-	for(i=1; i< v[u].size(); i++) {
-		if(odwiedzone[v[u][i]] == Gray && cykle[u][i-1] != i) {
-			cout << "Istnieje cykl!"<<endl;
-			return;
+bool sprawdz_polaczenie(vector <int> x, vector <int> y) {
+	int i,j;
+	for(i=0; i < x.size();i++) {
+		for(j=0; j < y.size(); j++) {
+			if(x[i] == y[j])
+				return true;
 		}
-		if(odwiedzone[v[u][i]] == White) {
-				cykle[u].push_back(u);
-				DFS_visit(v[u][i]);
-		}
+	}
 		
-	}	
-	odwiedzone[u] = Black;
 }
 
-void DFS_cycle() {
-	int i;
-	for(i=0; i< n; i++) {
-		odwiedzone[i] = White;
-		cykle[i].empty();
-	}
+void znajdz(int v, int poczatkowy) {
 
-	for(i=0; i< n;i++) {
-		if (odwiedzone[i] == White) {
-           // DFS_visit(i);
+	cykle[v].push_back(v);
+	
+	for(int i=1; i< sasiedzi[v].size()-1; i++) {
+		if(sprawdz_polaczenie(sasiedzi[sasiedzi[v][i]], sasiedzi[sasiedzi[v][i+1]])){
+			cykle[v].push_back(sasiedzi[v][i]);
+			cykle[v].push_back(sasiedzi[v][i+1]);	
 		}
 	}
-	
-}
 
-void Znajdz_cykle(int startingNode, int currentNode, int originNode, vector<int> visitedNodes) {
-
-	vector <int> cycles; 
-	
-	visitedNodes.push_back(currentNode);
-   //v[currentNode]
-    
-    
-    for(i=1; i < v[currentNode].size(); i++) { 
-   	if (i == originNode) {
-			continue;
-		}
-        if (i == startingNode) {
-                    // mamy cykl
-                    vector <int> cykl;
-                    
-                    for(int cycleNode=0; i< visitedNodes.size();cycleNode++) {
-                       ;
-                        cykl.push_back(cycleNode);
-                    }
-                    cycle.push_back(startingNode);
-
-					//tutaj dodaje cykl
-                }
-                else {
-                    // szukamy dalej
-                
-                }
-            }
-
-
-	//return cykle;
 }
 
 void find_cycles() {
@@ -100,48 +55,41 @@ void find_cycles() {
 	for(i=0;i<n; i++) {
 		//bierzemy pierwszy wierzchołek
 		//tworzymy liste i wrzucamy pierwszy wierzcholek?
-		v.push_back ( vector<int>() );
-		v[i].push_back(i);
+		sasiedzi.push_back ( vector<int>() );
+		//v[i].push_back(i);
 
 		for(j=0; j<n; j++) {
 			//szukamy wszystkie polaczenia odchodzace od niego i wrzucamy na liste
 			if(my_array[j][i] == 1)
 			{
-				v[i].push_back(j);
+				sasiedzi[i].push_back(j);
 			} 
 		}		
 	}
 	
 	//just 4info
 	for(i=0; i<n; i++) {
-		cout<< "wierzcholek " << v[i][0] << ": ";
-		for(j=1; j < v[i].size(); j++) {
-			cout << v[i][j] << ' ';
+		cout<< "wierzcholek " << i << ": ";
+		for(j=0; j < sasiedzi[i].size(); j++) {
+			cout << sasiedzi[i][j] << ' ';
 		}
 		cout << endl;
 	}
 
-
-	vector <int> cykl;
-
-	/*teraz przejdziemy po strukturze szukajac najmniejszych cykli
+	//teraz przejdziemy po strukturze szukajac najmniejszych cykli
 	for(i=0; i<n; i++) {
-		//teraz mamy informacje o wierzchalkach graniczacych z aktualnym wierzcholkiem 'i'
-		cykl.push_back(v[i][0]);
-		
-		for(j=0; j < v[i].size(); j++) { 
-				//musimy przejsc po grafie i znalezc wszystkie cykle
-				//zaczynajace i konczace sie na wierzholku 'i'
-				//potem musimy przefiltrowac?
-				
-				//jezeli sasiedzi nie odwiedzeni - idz tam
-				
-		
-		
-		}
+		cykle.push_back ( vector<int>() );
+		znajdz(i,0);
 	}
-	*/
-
+	
+	for(i=0; i < n; i++) {
+		cout<< "cykl" << i <<": ";
+		for(j=0; j< cykle[i].size(); j++) {
+			cout << cykle[i][j]<< " ";
+		}
+		cout <<endl;
+	}
+	
 }
 
 void Backtrace_coloring(int i) {	
@@ -238,14 +186,81 @@ void wygeneruj_graf() {
 	file.close();
 }
 
+void zrob_wierzcholki() {
+	int i, j, k, l;
+	int edge;
+	
+	int nowy[cykle.size()][cykle.size()];
+	
+	
+	
+	cykle.push_back ( vector<int>() );
+	cykle.push_back ( vector<int>() );
+	cykle[0].push_back(1);
+	cykle[0].push_back(2);
+	cykle[0].push_back(3);
+	
+	cykle[1].push_back(0);
+	cykle[1].push_back(1);
+	cykle[1].push_back(3);
+	cykle[1].push_back(4);
+	
+	for(i=0; i<cykle.size(); i++) {
+		for(j=0; j<cykle.size(); j++){
+			nowy[i][j]=0;
+			//cout<<nowy[i][j]<<" ";
+		}
+		//cout<<endl;
+	}
+	
+	
+	//liczymy wspolne wierzcholki
+	for(i=0; i < cykle.size()-1; i++) {
+		
+		vector <int> tmp = cykle[i];
+		
+		for(j=0; j <cykle.size(); j++) {
+			edge = 0;
+			
+			for(k=0; k < tmp.size(); k++) {
+				for(l=0; l < cykle[j].size(); l++) {
+								
+					//nie ma sensu sie sprawdzac, pomin
+					if(tmp != cykle[j]) {
+						if(tmp[k] == cykle[j][l]) {
+							edge++;
+						}
+					}
+				}
+			}
+		}
+		if(edge > 1) {
+			//napewno miedzy 2 cyklami istnieje wspolna krawedz!
+			nowy[k][i] = 1;
+			nowy[i][k] = 1;
+		}
+		
+	}
+	
+	for(i=0; i < cykle.size(); i++) {
+		for(j=0; j<cykle.size(); j++){
+			cout<< nowy[i][j] << ' ';
+		}
+		cout<<endl;
+	}
+}
+
 int main(int argc, char *argv[]) {
 	wczytaj_macierz(argv[1]);
 	//print_array();
-	find_cycles();
+	//find_cycles();
 	//Backtrace_coloring(0);
 	//print_array();
 	//wygeneruj_graf();	
 	
+	//zalozmy ze mamy juz cykle zapisane w wektorze...
+
+	zrob_wierzcholki();
 	
 	cout << endl;
 	return 0;
