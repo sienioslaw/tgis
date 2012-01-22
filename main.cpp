@@ -199,6 +199,7 @@ void zrob_wierzcholki() {
 	cykle.push_back ( vector<int>() );
 	cykle.push_back ( vector<int>() );
 	
+	
 	cykle[0].push_back(1);
 	cykle[0].push_back(2);
 	cykle[0].push_back(3);
@@ -213,6 +214,7 @@ void zrob_wierzcholki() {
 	cykle[2]. push_back(4);
 	cykle[2]. push_back(5);
 	cykle[2]. push_back(6);
+	
 		
 	int nowy[cykle.size()][cykle.size()];
 	
@@ -232,41 +234,47 @@ void zrob_wierzcholki() {
 		cout<<endl;
 	}
 	
-	
-	
+	int poloczone[cykle.size()][cykle.size()];	
 	int ilosc_cykli = cykle.size();
 	
 	//liczymy wspolne wierzcholki
 	for(i=0; i < ilosc_cykli; i++) {
 		vector <int> tmp = cykle[i];
 
-		for(j=0; j < tmp.size();j++) { 
+		for(k=0; k< ilosc_cykli; k++) {
 			
-			for(k=0; k< ilosc_cykli; k++) {
-				
+			
+			for(j=0; j < tmp.size();j++) { 		
 				for(m=0; m < cykle[k].size(); m++) {
-					if(tmp != cykle[k] && tmp[j] == cykle[k][m]) {
-						edge++;
-						cout <<"przebieg i:" << i << ", akutalny mielony cykl:" << k 
-						<<", "<<" tmp: " << tmp[j] << " z " << cykle[k][m] << endl; 
-						//cout<< tmp[j] <<" i "<<cykle[k][m]<<" rowne\n";
+					if(tmp != cykle[k]) {
+						if(tmp[j] == cykle[k][m]) {
+							edge++;
+							//poloczone[k][m]
+							/*cout <<"przebieg i:" << i << ", akutalny mielony cykl:" << k 
+							//<<", "<<" tmp: " << tmp[j] << " z " << cykle[k][m] << endl; 
+							//cout<< tmp[j] <<" i "<<cykle[k][m]<<" rowne\n";
+							*/
+						}
 					}
 					
 				}
-				cout<<"edge: "<< edge<<endl;
+				// ^ konczymy z m
 				
 				
-					
+				//cout<<endl;
+				//cout<<"edge: "<< edge<<endl;
+				
 			}
+			//sprawdzilismy obie tablice
 			if(edge > 1) {
-					cout<< "Jakies polaczenie...\n";
-					//napewno miedzy 2 cyklami istnieje wspolna krawedz!
-					nowy[j][k] = 1;
-					nowy[k][j] = 1;
-				}
+				//napewno miedzy 2 cyklami istnieje wspolna krawedz!
+				nowy[k][i] = 1;
+				//nowy[j][m] = 1;					
+			}
+			edge=0;
 			
-
 		}
+		cout<<endl;
 		edge=0;
 		
 	}
