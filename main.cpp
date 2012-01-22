@@ -170,32 +170,35 @@ void wygeneruj_graf() {
 	for(int i=0; i<n; i++) {
 		file << "vertex" << i << " [style=filled, color="<< KOLORY[my_array[i][i]]<<"]\n";		
 	}
+	
 	//teraz relacje?
 	for(int i=0; i<n; i++) {
 		for(int j=0; j<n; j++) {
 			if(my_array[i][j] !=0 && j != i) {
 				file << "vertex" << i << " -- " << "vertex" << j << "\n";
 			}
-		
-		}
+				my_array[j][i] = 0;
+		}	
 		file << "\n";
 		
 	}
 	
 	file << "}\n";
 	file.close();
+	
+	cout<< "wygenerowalem graf!\n";
+	
 }
 
 void zrob_wierzcholki() {
-	int i, j, k, l;
-	int edge;
-	
-	int nowy[cykle.size()][cykle.size()];
-	
+	int i, j, k, l, m;
+	int edge = 0;
 	
 	
 	cykle.push_back ( vector<int>() );
 	cykle.push_back ( vector<int>() );
+	cykle.push_back ( vector<int>() );
+	
 	cykle[0].push_back(1);
 	cykle[0].push_back(2);
 	cykle[0].push_back(3);
@@ -205,42 +208,69 @@ void zrob_wierzcholki() {
 	cykle[1].push_back(3);
 	cykle[1].push_back(4);
 	
+	cykle[2]. push_back(2);
+	cykle[2]. push_back(3);
+	cykle[2]. push_back(4);
+	cykle[2]. push_back(5);
+	cykle[2]. push_back(6);
+		
+	int nowy[cykle.size()][cykle.size()];
+	
+	
 	for(i=0; i<cykle.size(); i++) {
 		for(j=0; j<cykle.size(); j++){
 			nowy[i][j]=0;
-			//cout<<nowy[i][j]<<" ";
 		}
-		//cout<<endl;
+		
 	}
 	
+	for(i=0; i<cykle.size(); i++) {
+		cout<<"cykl " << i<< ": ";
+		for(j=0; j<cykle[i].size(); j++){
+			cout<< cykle[i][j]<<" ";
+		}
+		cout<<endl;
+	}
+	
+	
+	
+	int ilosc_cykli = cykle.size();
 	
 	//liczymy wspolne wierzcholki
-	for(i=0; i < cykle.size()-1; i++) {
-		
+	for(i=0; i < ilosc_cykli; i++) {
 		vector <int> tmp = cykle[i];
-		
-		for(j=0; j <cykle.size(); j++) {
-			edge = 0;
+
+		for(j=0; j < tmp.size();j++) { 
 			
-			for(k=0; k < tmp.size(); k++) {
-				for(l=0; l < cykle[j].size(); l++) {
-								
-					//nie ma sensu sie sprawdzac, pomin
-					if(tmp != cykle[j]) {
-						if(tmp[k] == cykle[j][l]) {
-							edge++;
-						}
+			for(k=0; k< ilosc_cykli; k++) {
+				
+				for(m=0; m < cykle[k].size(); m++) {
+					if(tmp != cykle[k] && tmp[j] == cykle[k][m]) {
+						edge++;
+						cout <<"przebieg i:" << i << ", akutalny mielony cykl:" << k 
+						<<", "<<" tmp: " << tmp[j] << " z " << cykle[k][m] << endl; 
+						//cout<< tmp[j] <<" i "<<cykle[k][m]<<" rowne\n";
 					}
+					
 				}
+				cout<<"edge: "<< edge<<endl;
+				
+				
+					
 			}
+			if(edge > 1) {
+					cout<< "Jakies polaczenie...\n";
+					//napewno miedzy 2 cyklami istnieje wspolna krawedz!
+					nowy[j][k] = 1;
+					nowy[k][j] = 1;
+				}
+			
+
 		}
-		if(edge > 1) {
-			//napewno miedzy 2 cyklami istnieje wspolna krawedz!
-			nowy[k][i] = 1;
-			nowy[i][k] = 1;
-		}
+		edge=0;
 		
 	}
+	
 	
 	for(i=0; i < cykle.size(); i++) {
 		for(j=0; j<cykle.size(); j++){
