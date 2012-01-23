@@ -6,12 +6,13 @@
 #include <stdio.h>
 #include <vector>
 
+# define MAX 100
 
 using namespace std;
 
-# define MAX 100
-
 int my_array[MAX][MAX];     	// Graf jako macierz incydencji
+int nowy[MAX][MAX];     		// Graf jako macierz incydencji
+
 
 int n, m;						// n -liczba wierzcholkow, m - krawedzi
 int paleta = 4; 				// cztery kolory, nie więcej!
@@ -21,7 +22,7 @@ vector<vector <int> > cykle;
 enum VertexState { White, Gray, Black };
 VertexState *odwiedzone = new VertexState[MAX];
 
-string KOLORY[]= {"red","blue","green", "yellow"};
+string KOLORY[]= {"black","red","blue","green", "yellow"};
 
 bool sprawdz_polaczenie(vector <int> x, vector <int> y) {
 	int i,j;
@@ -98,14 +99,17 @@ void Backtrace_coloring(int i) {
 	
 	if(i == n) {
 		for(m=0; m < n; m++) {
-			//printf("\nWierchołek %d ma kolor (%d) i sasiaduje z ",m+1, my_array[m][m]+1);
+			cout <<"\nWierzcholek "<< m <<" ma kolor " << my_array[m][m] << ", i sasiaduje z: ";   
+			//cout <<"\nWierzcholek "<< m+1 <<" ma kolor " << KOLORY[(nowy[m][m]+1)] << ", i sasiaduje z: ";   
 			
 			for(a = 0; a < n; a++) {
 				if(my_array[m][a] !=0 && a != m) {
-				//	printf("%d(%d) ", a+1, my_array[a][a]+1);
+					cout << a << "(" << my_array[a][a]<<"), ";
 				}
-			}
+							
+			}			
 		}
+		cout<<endl;
 	}
 	while(kolor < paleta && i < n) {
 		for(m=0; m < i; m++) {
@@ -153,6 +157,7 @@ void wczytaj_macierz(char *filename) {
 void print_array() {
 	int i, j;
 	cout << n << " " << m <<endl;
+	cout<<endl;
 	
 	for(i=0; i<n; i++) {
 		for(j=0;j<n;j++) {
@@ -198,22 +203,31 @@ void zrob_wierzcholki() {
 	cykle.push_back ( vector<int>() );
 	cykle.push_back ( vector<int>() );
 	cykle.push_back ( vector<int>() );
+	cykle.push_back ( vector<int>() );
 	
 	
+	cykle[0].push_back(0);
 	cykle[0].push_back(1);
-	cykle[0].push_back(2);
 	cykle[0].push_back(3);
+	cykle[0].push_back(4);
 	
-	cykle[1].push_back(0);
+	
 	cykle[1].push_back(1);
+	cykle[1].push_back(2);
 	cykle[1].push_back(3);
-	cykle[1].push_back(4);
 	
-	cykle[2]. push_back(2);
-	cykle[2]. push_back(3);
-	cykle[2]. push_back(4);
-	cykle[2]. push_back(5);
-	cykle[2]. push_back(6);
+	
+	cykle[2].push_back(2);
+	cykle[2].push_back(3);
+	cykle[2].push_back(4);
+	cykle[2].push_back(5);
+	cykle[2].push_back(6);
+	
+	cykle[3].push_back(1);
+	cykle[3].push_back(2);
+	cykle[3].push_back(7);
+	cykle[3].push_back(8);
+	
 	
 		
 	int nowy[cykle.size()][cykle.size()];
@@ -221,7 +235,8 @@ void zrob_wierzcholki() {
 	
 	for(i=0; i<cykle.size(); i++) {
 		for(j=0; j<cykle.size(); j++){
-			nowy[i][j]=0;
+			//nowy[i][j]=0;
+			my_array[i][j]=0;
 		}
 		
 	}
@@ -258,18 +273,13 @@ void zrob_wierzcholki() {
 					}
 					
 				}
-				// ^ konczymy z m
-				
-				
-				//cout<<endl;
-				//cout<<"edge: "<< edge<<endl;
 				
 			}
 			//sprawdzilismy obie tablice
 			if(edge > 1) {
 				//napewno miedzy 2 cyklami istnieje wspolna krawedz!
-				nowy[k][i] = 1;
-				//nowy[j][m] = 1;					
+				//nowy[k][i] = 1;
+				my_array[k][i] = 1;					
 			}
 			edge=0;
 			
@@ -279,26 +289,36 @@ void zrob_wierzcholki() {
 		
 	}
 	
-	
+	cout<< "Wygenerowalem macierz sasiedztwa!\n"<<endl;
 	for(i=0; i < cykle.size(); i++) {
 		for(j=0; j<cykle.size(); j++){
-			cout<< nowy[i][j] << ' ';
+			//cout<< nowy[i][j] << ' ';
+			cout<< my_array[i][j] << ' ';
+		
 		}
 		cout<<endl;
 	}
+	
+	n = cykle.size();
+	
+	//teraz go pokoloruj i wygeneruj graf graphviza
+	print_array();
+	Backtrace_coloring(0);
+	print_array();
+	wygeneruj_graf();
 }
 
 int main(int argc, char *argv[]) {
 	wczytaj_macierz(argv[1]);
 	//print_array();
 	//find_cycles();
-	//Backtrace_coloring(0);
-	//print_array();
-	//wygeneruj_graf();	
+	
+	Backtrace_coloring(0);
+	print_array();
+	wygeneruj_graf();	
 	
 	//zalozmy ze mamy juz cykle zapisane w wektorze...
-
-	zrob_wierzcholki();
+	//zrob_wierzcholki();
 	
 	cout << endl;
 	return 0;
