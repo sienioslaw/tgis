@@ -1,0 +1,13 @@
+Program należy zbudować za pomocą polecenia ./make, a nastepnie uruchomic
+program z parametrem ./map plik_grafu.txt
+
+Plik grafu powinien zawierać macierz sasiedztwa, a takze podana informacje
+nt. liczby wierzcholkow w grafie(I linika).
+
+Program po obliczeniu koloru każdego z wierzchołka generuje także plik z grafem
+(graf.dot), którego to należy przerobic na wersje graficzną poleceniem np. 
+dot -o wynik.pdf -Tpdf graf.dot 
+
+Po wygenerowaniu może sie okazać że graf jest zle rozłożony i nie jest planarny, 
+pomimo że nasz graf na rysunku w zeszycie taki jest, pewnie jest jakaś magiczna
+opcja w graphvizie która to robi, ale nie udało mi się jej znaleźć...
