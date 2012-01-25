@@ -1,0 +1,68 @@
+Graph {
+vertex1 [style=filled, color=red]
+vertex2 [style=filled, color=red]
+vertex3 [style=filled, color=red]
+vertex4 [style=filled, color=blue]
+vertex5 [style=filled, color=blue]
+vertex6 [style=filled, color=red]
+vertex7 [style=filled, color=green]
+vertex8 [style=filled, color=yellow]
+vertex9 [style=filled, color=blue]
+vertex10 [style=filled, color=blue]
+vertex11 [style=filled, color=blue]
+vertex12 [style=filled, color=green]
+vertex13 [style=filled, color=yellow]
+vertex14 [style=filled, color=yellow]
+vertex15 [style=filled, color=green]
+vertex16 [style=filled, color=red]
+vertex1 -- vertex3
+vertex1 -- vertex7
+vertex1 -- vertex14
+
+vertex2 -- vertex4
+vertex2 -- vertex6
+vertex2 -- vertex10
+vertex2 -- vertex13
+vertex2 -- vertex14
+
+vertex3 -- vertex6
+vertex3 -- vertex8
+vertex3 -- vertex9
+vertex3 -- vertex12
+
+vertex4 -- vertex14
+vertex4 -- vertex15
+
+vertex5 -- vertex6
+vertex5 -- vertex7
+vertex5 -- vertex11
+vertex5 -- vertex12
+vertex5 -- vertex14
+
+vertex6 -- vertex8
+vertex6 -- vertex11
+vertex6 -- vertex12
+
+vertex7 -- vertex9
+vertex7 -- vertex12
+vertex7 -- vertex13
+
+vertex8 -- vertex11
+vertex8 -- vertex14
+
+vertex9 -- vertex12
+
+vertex10 -- vertex13
+
+vertex11 -- vertex13
+vertex11 -- vertex14
+vertex11 -- vertex15
+
+vertex12 -- vertex12
+
+
+
+vertex15 -- vertex15
+
+
+}
