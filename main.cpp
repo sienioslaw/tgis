@@ -8,7 +8,7 @@
 
 //zmienne globalne
 int my_array[MAX][MAX];     		// Graf jako macierz incydencji
-vector <UINT> X;					// tymczasowy wektor do zapisu informacji o kolorach
+vector <int> X;						// tymczasowy wektor do zapisu informacji o kolorach
 
 int n;								// n -liczba wierzcholkow
 int paleta = 4; 					// cztery kolory, nie więcej!
